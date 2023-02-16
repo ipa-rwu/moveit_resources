@@ -20,22 +20,9 @@ def generate_launch_description():
         "db", default_value="False", description="Database flag"
     )
 
-    ros2_control_hardware_type = DeclareLaunchArgument(
-        "ros2_control_hardware_type",
-        default_value="mock_components",
-        description="ROS2 control hardware interface type to use for the launch file -- possible values: [mock_components, isaac]",
-    )
-
     moveit_config = (
         MoveItConfigsBuilder("moveit_resources_panda")
-        .robot_description(
-            file_path="config/panda.urdf.xacro",
-            mappings={
-                "ros2_control_hardware_type": LaunchConfiguration(
-                    "ros2_control_hardware_type"
-                )
-            },
-        )
+        .robot_description(file_path="config/panda.urdf.xacro")
         .robot_description_semantic(file_path="config/panda.srdf")
         .trajectory_execution(file_path="config/gripper_moveit_controllers.yaml")
         .planning_pipelines(
@@ -56,7 +43,8 @@ def generate_launch_description():
     # RViz
     tutorial_mode = LaunchConfiguration("rviz_tutorial")
     rviz_base = os.path.join(
-        get_package_share_directory("moveit_resources_panda_moveit_config"), "launch"
+        get_package_share_directory(
+            "moveit_resources_panda_moveit_config"), "launch"
     )
     rviz_full_config = os.path.join(rviz_base, "moveit.rviz")
     rviz_empty_config = os.path.join(rviz_base, "moveit_empty.rviz")
@@ -95,7 +83,8 @@ def generate_launch_description():
         executable="static_transform_publisher",
         name="static_transform_publisher",
         output="log",
-        arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "panda_link0"],
+        arguments=["0.0", "0.0", "0.0", "0.0",
+                   "0.0", "0.0", "world", "panda_link0"],
     )
 
     # Publish TF
@@ -160,7 +149,6 @@ def generate_launch_description():
         [
             tutorial_arg,
             db_arg,
-            ros2_control_hardware_type,
             rviz_node,
             rviz_node_tutorial,
             static_tf_node,
